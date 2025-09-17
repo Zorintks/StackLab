@@ -1,7 +1,7 @@
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    emailjs.sendForm('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', this)
+    emailjs.sendForm('service_gvxtebp', 'template_l666cwt', this)
         .then(() => {
             alert('Mensagem enviada com sucesso!');
             this.reset();
