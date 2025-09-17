@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - StackLab</title>
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <main class="login-page">
+    <div class="card">
+      <div class="card-header">
+        <img src="images/logo.png" alt="StackLab" class="logo" />
+        <h2>Área Restrita - StackLab</h2>
+      </div>
+
+      <form id="loginForm" class="login-form" autocomplete="off">
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" required placeholder="seu@exemplo.com" />
+        </label>
+
+        <label>
+          <span>Senha</span>
+          <input type="password" name="password" required placeholder="••••••••" />
+        </label>
+
+        <button type="submit" class="btn">Entrar</button>
+        <p class="muted">Acesso restrito — apenas usuários autorizados</p>
+      </form>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <script>
+    // === USUÁRIOS (apenas para demo/local) ===
+    // Emails e senhas EXATAMENTE como você pediu.
+    const users = [
+      { email: "joaocraz157@gmail.com", password: "@dmlab2134@" },
+      { email: "zorotks@gmail.com",      password: "@dmsmb2134@" }
+    ];
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        showMessage("✔️ Login bem-sucedido. Redirecionando...", true);
+        // Simula redirecionamento para dashboard (mude para a URL real)
+        setTimeout(() => {
+          window.location.href = "dashboard.html"; // crie essa página depois
+        }, 900);
+      } else {
+        showMessage("✖️ Email ou senha inválidos.", false);
+      }
+    });
+
+    function showMessage(text, success) {
+      msg.textContent = text;
+      msg.classList.remove("ok", "error");
+      msg.classList.add(success ? "ok" : "error");
+      // animação: aparece e some
+      msg.style.opacity = "1";
+      setTimeout(() => msg.style.opacity = "0", 3000);
+    }
+  </script>
+</body>
+</html>

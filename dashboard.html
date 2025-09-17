@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>StackLab - Painel Administrativo</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <img src="../images/logo.png" alt="StackLab">
+      <h2>StackLab Admin</h2>
+    </div>
+    <ul class="menu">
+      <li><a href="#" data-section="overview">📊 Visão Geral</a></li>
+      <li><a href="#" data-section="clients">👤 Clientes</a></li>
+      <li><a href="#" data-section="projects">📁 Projetos</a></li>
+      <li><a href="#" data-section="finances">💰 Finanças</a></li>
+      <li><a href="#" data-section="settings">⚙️ Configurações</a></li>
+      <li><a href="#" id="logoutBtn">🚪 Sair</a></li>
+
+    </ul>
+  </div>
+
+  <div class="main">
+    <header>
+      <h1 id="section-title">Visão Geral</h1>
+    </header>
+
+    <!-- Conteúdo Dinâmico -->
+    <section id="overview" class="active">
+      <div class="cards">
+        <div class="card">Total Clientes <span id="total-clients">0</span></div>
+        <div class="card">Projetos Ativos <span id="total-projects">0</span></div>
+        <div class="card">Receita Mensal <span id="monthly-income">R$ 0,00</span></div>
+      </div>
+    </section>
+
+    <section id="clients">
+  <h2>Gerenciar Clientes</h2>
+  <div class="client-form">
+    <input type="text" id="clientName" placeholder="Nome do Cliente" required>
+    <input type="text" id="projectType" placeholder="Tipo de Projeto" required>
+    <input type="number" id="projectValue" placeholder="Valor" required>
+    <input type="date" id="projectDeadline" placeholder="Prazo" required>
+    <button id="addClientBtn" class="btn">Adicionar Cliente</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Tipo de Projeto</th>
+        <th>Valor</th>
+        <th>Prazo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="clientTable"></tbody>
+  </table>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+</section>
+
+
+    <section id="projects">
+      <h2>Gestão de Projetos</h2>
+      <form id="projectForm">
+        <input type="text" name="title" placeholder="Título do Projeto" required>
+        <textarea name="desc" placeholder="Descrição"></textarea>
+        <button type="submit" class="btn">Criar Projeto</button>
+      </form>
+      <ul id="projectList"></ul>
+    </section>
+
+    <section id="finances">
+      <h2>Controle de Finanças</h2>
+      <form id="financeForm">
+        <input type="text" name="title" placeholder="Descrição" required>
+        <input type="number" step="0.01" name="value" placeholder="Valor" required>
+        <select name="type">
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
+        <button type="submit" class="btn">Adicionar</button>
+      </form>
+      <div id="financeSummary">
+        <p>Entradas: <span id="total-income">R$ 0,00</span></p>
+        <p>Saídas: <span id="total-expenses">R$ 0,00</span></p>
+        <p>Saldo: <span id="balance">R$ 0,00</span></p>
+      </div>
+    </section>
+
+    <section id="settings">
+      <h2>Configurações de Conta</h2>
+      <form id="passwordForm">
+        <input type="password" name="old" placeholder="Senha Atual" required>
+        <input type="password" name="new" placeholder="Nova Senha" required>
+        <button type="submit" class="btn">Alterar Senha</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
