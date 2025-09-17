@@ -14,9 +14,9 @@ document.querySelectorAll(".menu a").forEach(link => {
 });
 
 // ================= Logout =================
-document.getElementById("logoutBtn").addEventListener("click", e => {
+document.getElementById("logoutBtn").addEventListener("click", async e => {
   e.preventDefault();
-  alert("Você saiu do painel.");
+  await fetch("backend/logout.php");
   window.location.href = "login.html";
 });
 
@@ -29,46 +29,41 @@ function showToast(message) {
 }
 
 // ================= Clientes =================
-const addClientBtn = document.getElementById("addClientBtn");
 const clientTable = document.getElementById("clientTable");
+const addClientBtn = document.getElementById("addClientBtn");
 
-// Recupera clientes do localStorage
-let clients = JSON.parse(localStorage.getItem("clients")) || [];
-
-// Função para atualizar visão geral
-function updateOverview() {
+async function fetchClients() {
+  const res = await fetch("backend/clients.php");
+  const clients = await res.json();
+  renderClients(clients);
   document.getElementById("total-clients").textContent = clients.length;
 }
 
-// Função para renderizar tabela de clientes
-function renderClients() {
+function renderClients(clients) {
   clientTable.innerHTML = "";
-  clients.forEach((client, index) => {
+  clients.forEach(client => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${client.name}</td>
-      <td>${client.type}</td>
-      <td>R$ ${parseFloat(client.value).toFixed(2)}</td>
-      <td>${client.deadline}</td>
+      <td>${client.type || '-'}</td>
+      <td>R$ ${parseFloat(client.value || 0).toFixed(2)}</td>
+      <td>${client.deadline || '-'}</td>
       <td><button class="deleteBtn">Excluir</button></td>
     `;
-    row.querySelector(".deleteBtn").addEventListener("click", () => {
-      clients.splice(index, 1);       // remove do array
-      localStorage.setItem("clients", JSON.stringify(clients)); // atualiza storage
+    row.querySelector(".deleteBtn").addEventListener("click", async () => {
+      await fetch("backend/clients.php", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: client.id })
+      });
       showToast("Cliente removido!");
-      renderClients();
-      updateOverview();
+      fetchClients();
     });
     clientTable.appendChild(row);
   });
 }
 
-// Inicializa tabela e visão geral ao carregar a página
-renderClients();
-updateOverview();
-
-// Adiciona cliente
-addClientBtn.addEventListener("click", () => {
+addClientBtn.addEventListener("click", async () => {
   const name = document.getElementById("clientName").value.trim();
   const type = document.getElementById("projectType").value.trim();
   const value = document.getElementById("projectValue").value.trim();
@@ -79,37 +74,96 @@ addClientBtn.addEventListener("click", () => {
     return;
   }
 
-  // Adiciona ao array
-  clients.push({ name, type, value, deadline });
-  localStorage.setItem("clients", JSON.stringify(clients));
+  await fetch("backend/clients.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, type, value, deadline })
+  });
 
-  // Atualiza UI
-  renderClients();
-  updateOverview();
-
-  // Limpa campos
+  showToast("Cliente adicionado com sucesso!");
   document.getElementById("clientName").value = "";
   document.getElementById("projectType").value = "";
   document.getElementById("projectValue").value = "";
   document.getElementById("projectDeadline").value = "";
 
-  showToast("Cliente adicionado com sucesso!");
+  fetchClients();
 });
 
-// ================= Projetos (Placeholder) =================
-document.getElementById("projectForm")?.addEventListener("submit", e => {
+// ================= Projetos =================
+const projectList = document.getElementById("projectList");
+document.getElementById("projectForm")?.addEventListener("submit", async e => {
   e.preventDefault();
-  showToast("Projeto criado (simulação)!");
+  const title = e.target.title.value.trim();
+  const desc = e.target.desc.value.trim();
+  if (!title) return showToast("Preencha o título do projeto");
+
+  await fetch("backend/projects.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, description: desc })
+  });
+  showToast("Projeto criado!");
+  e.target.reset();
+  fetchProjects();
 });
 
-// ================= Finanças (Placeholder) =================
-document.getElementById("financeForm")?.addEventListener("submit", e => {
+async function fetchProjects() {
+  const res = await fetch("backend/projects.php");
+  const projects = await res.json();
+  projectList.innerHTML = "";
+  projects.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.title} (${p.status})`;
+    projectList.appendChild(li);
+  });
+}
+
+// ================= Finanças =================
+document.getElementById("financeForm")?.addEventListener("submit", async e => {
   e.preventDefault();
-  showToast("Registro financeiro adicionado (simulação)!");
+  const title = e.target.title.value.trim();
+  const value = parseFloat(e.target.value.value);
+  const type = e.target.type.value;
+  if (!title || isNaN(value)) return showToast("Preencha todos os campos");
+
+  await fetch("backend/finances.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, value, type })
+  });
+
+  showToast("Registro financeiro adicionado!");
+  e.target.reset();
+  fetchFinances();
 });
 
-// ================= Alterar Senha (Placeholder) =================
-document.getElementById("passwordForm")?.addEventListener("submit", e => {
+async function fetchFinances() {
+  const res = await fetch("backend/finances.php");
+  const finances = await res.json();
+  let income = 0, expense = 0;
+  finances.forEach(f => f.type === "entrada" ? income += parseFloat(f.value) : expense += parseFloat(f.value));
+  document.getElementById("total-income").textContent = `R$ ${income.toFixed(2)}`;
+  document.getElementById("total-expenses").textContent = `R$ ${expense.toFixed(2)}`;
+  document.getElementById("balance").textContent = `R$ ${(income - expense).toFixed(2)}`;
+}
+
+// ================= Alterar Senha =================
+document.getElementById("passwordForm")?.addEventListener("submit", async e => {
   e.preventDefault();
-  showToast("Senha alterada (simulação)!");
+  const oldPass = e.target.old.value.trim();
+  const newPass = e.target.new.value.trim();
+
+  const res = await fetch("backend/change_password.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ old: oldPass, new: newPass })
+  });
+  const data = await res.json();
+  showToast(data.message);
+  e.target.reset();
 });
+
+// ================= Inicialização =================
+fetchClients();
+fetchProjects();
+fetchFinances();
