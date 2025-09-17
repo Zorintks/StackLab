@@ -3,12 +3,27 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 
     emailjs.sendForm('service_gvxtebp', 'template_l666cwt', this)
         .then(() => {
-            alert('Mensagem enviada com sucesso!');
+            showNotification('Mensagem enviada com sucesso!');
             this.reset();
+            // Volta para a seção de contato
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         }, (err) => {
-            alert('Erro ao enviar mensagem: ' + JSON.stringify(err));
+            showNotification('Erro ao enviar mensagem: tente novamente.');
+            console.error(err);
         });
 });
+
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    const text = document.getElementById('notification-text');
+    text.textContent = message;
+    notification.classList.add('show');
+
+    // Esconder após 3 segundos
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
 
 
 

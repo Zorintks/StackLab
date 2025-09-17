@@ -952,3 +952,27 @@ span {
 img {
     border-radius: 20px;
 }
+
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--main-color);
+    color: var(--white-color);
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.2);
+    font-size: 1.6rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 9999;
+}
+
+.notification.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
