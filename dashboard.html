@@ -29,36 +29,37 @@
     </header>
 
     <!-- Conteúdo Dinâmico -->
-    <section id="overview" class="active">
-      <div class="cards">
-        <div class="card">Total Clientes <span id="total-clients">0</span></div>
-        <div class="card">Projetos Ativos <span id="total-projects">0</span></div>
-        <div class="card">Receita Mensal <span id="monthly-income">R$ 0,00</span></div>
-      </div>
-    </section>
+   <section id="clientsSection" class="active">
+  <h2>Clientes</h2>
 
-    <section id="clients">
-  <h2>Gerenciar Clientes</h2>
-  <div class="client-form">
-    <input type="text" id="clientName" placeholder="Nome do Cliente" required>
-    <input type="text" id="projectType" placeholder="Tipo de Projeto" required>
-    <input type="number" id="projectValue" placeholder="Valor" required>
-    <input type="date" id="projectDeadline" placeholder="Prazo" required>
-    <button id="addClientBtn" class="btn">Adicionar Cliente</button>
-  </div>
+  <form class="client-form" id="clientForm">
+    <input type="text" id="clientName" placeholder="Nome do cliente" required>
+    <input type="text" id="projectType" placeholder="Tipo do projeto" required>
+    <input type="number" id="projectValue" placeholder="Valor" step="0.01" required>
+    <input type="date" id="projectDeadline" required>
+    <button type="submit">Adicionar Cliente</button>
+  </form>
 
   <table>
     <thead>
       <tr>
         <th>Nome</th>
-        <th>Tipo de Projeto</th>
+        <th>Tipo</th>
         <th>Valor</th>
         <th>Prazo</th>
         <th>Ações</th>
       </tr>
     </thead>
-    <tbody id="clientTable"></tbody>
+    <tbody id="clientTable">
+      <!-- JS vai preencher aqui -->
+    </tbody>
   </table>
+
+  <span>Total de clientes: <span id="total-clients">0</span></span>
+</section>
+
+<div id="toast" class="toast"></div>
+
 
   <!-- Toast notification -->
   <div id="toast" class="toast"></div>

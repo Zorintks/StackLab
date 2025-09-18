@@ -28,68 +28,83 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// ================= Clientes =================
 const clientTable = document.getElementById("clientTable");
-const addClientBtn = document.getElementById("addClientBtn");
+const clientForm = document.getElementById("clientForm");
 
-// Função para buscar clientes do banco
-async function fetchClients() {
-  const res = await fetch("backend/clients.php");
-  const clients = await res.json();
-  renderClients(clients);
-  document.getElementById("total-clients").textContent = clients.length;
+
+// ================= Toast =================
+function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"),3000);
 }
 
-// Função para renderizar a tabela de clientes
-function renderClients(clients) {
-  clientTable.innerHTML = "";
-  clients.forEach(client => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${client.name}</td>
-      <td>${client.type || '-'}</td>
-      <td>R$ ${parseFloat(client.value || 0).toFixed(2)}</td>
-      <td>${client.deadline || '-'}</td>
-      <td><button class="deleteBtn">Excluir</button></td>
-    `;
-    row.querySelector(".deleteBtn").addEventListener("click", async () => {
-      await fetch("backend/clients.php", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: client.id })
-      });
-      showToast("Cliente removido!");
-      fetchClients();
+// ================= Buscar clientes =================
+async function fetchClients(){
+    try {
+        const res = await fetch("backend/clients.php");
+        const clients = await res.json();
+        renderClients(clients);
+        document.getElementById("total-clients").textContent = clients.length;
+    } catch(err){
+        console.error(err);
+        showToast("Erro ao buscar clientes");
+    }
+}
+
+// ================= Renderizar tabela =================
+function renderClients(clients){
+    clientTable.innerHTML = "";
+    clients.forEach(client => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${client.name}</td>
+            <td>${client.type || '-'}</td>
+            <td>R$ ${parseFloat(client.value).toFixed(2)}</td>
+            <td>${client.deadline || '-'}</td>
+            <td><button class="deleteBtn">Excluir</button></td>
+        `;
+        row.querySelector(".deleteBtn").addEventListener("click", async () => {
+            await fetch("backend/clients.php", {
+                method: "DELETE",
+                headers: { "Content-Type":"application/json" },
+                body: JSON.stringify({ id: client.id })
+            });
+            showToast("Cliente removido!");
+            fetchClients();
+        });
+        clientTable.appendChild(row);
     });
-    clientTable.appendChild(row);
-  });
 }
 
-// Adicionar cliente
-addClientBtn.addEventListener("click", async () => {
-  const name = document.getElementById("clientName").value.trim();
-  const type = document.getElementById("projectType").value.trim();
-  const value = document.getElementById("projectValue").value.trim();
-  const deadline = document.getElementById("projectDeadline").value.trim();
+// ================= Adicionar cliente =================
+clientForm.addEventListener("submit", async e=>{
+    e.preventDefault();
 
-  if (!name || !type || !value || !deadline) {
-    showToast("Preencha todos os campos!");
-    return;
-  }
+    const name = document.getElementById("clientName").value.trim();
+    const type = document.getElementById("projectType").value.trim();
+    const value = document.getElementById("projectValue").value.trim();
+    const deadline = document.getElementById("projectDeadline").value.trim();
 
-  await fetch("backend/clients.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, type, value, deadline })
-  });
+    if(!name || !type || !value || !deadline){
+        showToast("Preencha todos os campos!");
+        return;
+    }
 
-  showToast("Cliente adicionado com sucesso!");
-  document.getElementById("clientName").value = "";
-  document.getElementById("projectType").value = "";
-  document.getElementById("projectValue").value = "";
-  document.getElementById("projectDeadline").value = "";
+    try {
+        await fetch("backend/clients.php",{
+            method:"POST",
+            headers: { "Content-Type":"application/json" },
+            body: JSON.stringify({ name,type,value,deadline })
+        });
 
-  fetchClients();
+        showToast("Cliente adicionado!");
+        clientForm.reset();
+        fetchClients();
+    } catch(err){
+        console.error(err);
+        showToast("Erro ao adicionar cliente");
+    }
 });
 
 // ================= Inicialização =================

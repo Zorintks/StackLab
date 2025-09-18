@@ -55,8 +55,8 @@ body {
 header h1 { font-size: 24px; margin-bottom: 20px; color: var(--accent); }
 
 /* Seções */
-section { display: none; }
-section.active { display: block; }
+section { display: none; } /* Seções escondidas por padrão */
+section.active { display: block; } /* Seção ativa visível */
 
 /* Cards */
 .cards { display: flex; gap: 20px; }
@@ -79,7 +79,7 @@ form, .client-form {
 }
 
 form input, form textarea, form select,
-.client-form input {
+.client-form input, .client-form select {
   padding: 12px;
   border: none;
   border-radius: 8px;
@@ -102,27 +102,34 @@ form textarea { resize: none; }
 }
 .btn:hover, .client-form button:hover { opacity: 0.9; }
 
-/* Table */
+/* ================= Tabela ================= */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  color: var(--text); /* Garante visibilidade do texto */
 }
+
 table th, table td {
-  padding: 10px;
+  padding: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   text-align: left;
 }
+
 table th {
   background: rgba(255,255,255,0.05);
+  color: var(--accent); /* Cabeçalho destacado */
 }
+
+/* Botão de deletar */
 .deleteBtn {
   background-color: #e74a3b;
   color: white;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s;
 }
 .deleteBtn:hover { background-color: #c0392b; }
 
@@ -146,16 +153,41 @@ table th {
   opacity: 1;
 }
 
-/* Ajustes da seção de clientes */
-.client-form input {
-  width: calc(25% - 10px);
-  margin-right: 10px;
-}
-.client-form input:last-child { margin-right: 0; }
-
+/* ================= Formulário de Clientes ================= */
 .client-form {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
 }
+
+.client-form input,
+.client-form select {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  color: var(--text);
+  font-size: 14px;
+  flex: 1; /* Inputs se ajustam e ocupam espaço igual */
+  min-width: 150px;
+}
+
+/* Ajustes de largura individual */
+.client-form input {
+  width: calc(25% - 10px);
+  margin-right: 10px;
+}
+.client-form input:last-child { margin-right: 0; }
+
+.client-form button {
+  background: var(--accent);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: bold;
+  transition: opacity 0.3s;
+}
+.client-form button:hover { opacity: 0.9; }
