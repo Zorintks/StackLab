@@ -17,7 +17,7 @@ document.querySelectorAll(".menu a").forEach(link => {
 document.getElementById("logoutBtn").addEventListener("click", async e => {
   e.preventDefault();
   await fetch("backend/logout.php");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 });
 
 // ================= Toast =================
