@@ -20,11 +20,12 @@ INSERT INTO users (name, email, username, password, role) VALUES
 
 USE stacklab;
 
--- Tabela clientes
-CREATE TABLE IF NOT EXISTS clients (
+CREATE TABLE clients (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(100) NOT NULL,
+  name VARCHAR(100),
+  type VARCHAR(100),
+  value DECIMAL(10,2),
+  deadline DATE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

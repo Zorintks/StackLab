@@ -32,6 +32,7 @@ function showToast(message) {
 const clientTable = document.getElementById("clientTable");
 const addClientBtn = document.getElementById("addClientBtn");
 
+// Função para buscar clientes do banco
 async function fetchClients() {
   const res = await fetch("backend/clients.php");
   const clients = await res.json();
@@ -39,6 +40,7 @@ async function fetchClients() {
   document.getElementById("total-clients").textContent = clients.length;
 }
 
+// Função para renderizar a tabela de clientes
 function renderClients(clients) {
   clientTable.innerHTML = "";
   clients.forEach(client => {
@@ -63,6 +65,7 @@ function renderClients(clients) {
   });
 }
 
+// Adicionar cliente
 addClientBtn.addEventListener("click", async () => {
   const name = document.getElementById("clientName").value.trim();
   const type = document.getElementById("projectType").value.trim();
@@ -89,81 +92,5 @@ addClientBtn.addEventListener("click", async () => {
   fetchClients();
 });
 
-// ================= Projetos =================
-const projectList = document.getElementById("projectList");
-document.getElementById("projectForm")?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const title = e.target.title.value.trim();
-  const desc = e.target.desc.value.trim();
-  if (!title) return showToast("Preencha o título do projeto");
-
-  await fetch("backend/projects.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, description: desc })
-  });
-  showToast("Projeto criado!");
-  e.target.reset();
-  fetchProjects();
-});
-
-async function fetchProjects() {
-  const res = await fetch("backend/projects.php");
-  const projects = await res.json();
-  projectList.innerHTML = "";
-  projects.forEach(p => {
-    const li = document.createElement("li");
-    li.textContent = `${p.title} (${p.status})`;
-    projectList.appendChild(li);
-  });
-}
-
-// ================= Finanças =================
-document.getElementById("financeForm")?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const title = e.target.title.value.trim();
-  const value = parseFloat(e.target.value.value);
-  const type = e.target.type.value;
-  if (!title || isNaN(value)) return showToast("Preencha todos os campos");
-
-  await fetch("backend/finances.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, value, type })
-  });
-
-  showToast("Registro financeiro adicionado!");
-  e.target.reset();
-  fetchFinances();
-});
-
-async function fetchFinances() {
-  const res = await fetch("backend/finances.php");
-  const finances = await res.json();
-  let income = 0, expense = 0;
-  finances.forEach(f => f.type === "entrada" ? income += parseFloat(f.value) : expense += parseFloat(f.value));
-  document.getElementById("total-income").textContent = `R$ ${income.toFixed(2)}`;
-  document.getElementById("total-expenses").textContent = `R$ ${expense.toFixed(2)}`;
-  document.getElementById("balance").textContent = `R$ ${(income - expense).toFixed(2)}`;
-}
-
-// ================= Alterar Senha =================
-document.getElementById("passwordForm")?.addEventListener("submit", async e => {
-  e.preventDefault();
-  const oldPass = e.target.old.value.trim();
-  const newPass = e.target.new.value.trim();
-
-  const res = await fetch("backend/change_password.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ old: oldPass, new: newPass })
-  });
-  const data = await res.json();
-  showToast(data.message);
-  e.target.reset();
-});
-
 // ================= Inicialização =================
 fetchClients();
-fetchProjects();
-fetchFinances();
