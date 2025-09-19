@@ -1,9 +1,9 @@
 <?php
-$host = "caboose.proxy.rlwy.net"; // Host do Railway
-$port = "43520"; // Porta do Railway
-$user = "root"; 
-$pass = "TMMtamfneumrKgJspXvkrYyjXsmsQbYt";
-$db   = "railway";
+$host = getenv("DB_HOST");
+$port = getenv("DB_PORT");
+$user = getenv("DB_USER");
+$pass = getenv("DB_PASS");
+$db   = getenv("DB_NAME");
 
 $conn = new mysqli($host, $user, $pass, $db, $port);
 
